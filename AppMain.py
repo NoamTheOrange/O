@@ -209,7 +209,7 @@ def Update(frame, OutMaiTex):
         
         global OutputText        
         OutMaiTex.insert(tk.END, OutputText)
-
+         
         time.sleep(5)
 
 
@@ -287,3 +287,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+#hejhej
