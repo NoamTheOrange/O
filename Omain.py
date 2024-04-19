@@ -116,8 +116,8 @@ def main():
                     return(payload)
                 else:
                     return {"error":"select you wave file"}
-            if 'update' in request.files:
-                ask = request.files['update']
+            if 'update' in request.data:
+                ask = request.data['update']
                 runUpdate(ask)
 
     except Exception as e:
