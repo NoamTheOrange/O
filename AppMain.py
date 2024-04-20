@@ -15,7 +15,7 @@ from youtubesearchpython import VideosSearch
 import keyboard
 
 privaleges = 0
-User = ""
+UserID = ""
 
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
@@ -100,6 +100,11 @@ def action(returnn):
     print(returnn)
     if "SerAct" in returnn.keys():
         pass
+
+    if "newID" in returnn.keys():
+        global UserID
+        UserID = returnn["newID"]
+
     if "Search" in returnn.keys():
         webbrowser.open(returnn["Search"][0])
         '''    :  server side
@@ -139,16 +144,17 @@ def action(returnn):
         keyboard.press_and_release('space')
 
 def send(payload,typee):
+    global userID
     url = 'http://192.168.0.229:5000/'
     if typee == "audio":
         with open(payload, 'rb') as audio:
-            r = requests.post(url, files={"audio" : audio})
+            r = requests.post(url, data={"ID" : userID}, files={"audio" : audio})
         action(r.json())
     elif typee == "ID":
         r = requests.post(url, files={"check ID" : payload})
         return(r.json())
     elif typee == "update":
-        r = requests.post(url, data={"update" : payload})
+        r = requests.post(url, data={"update" : payload, "ID" : userID})
         return(r.json())
     print(r.json())
 

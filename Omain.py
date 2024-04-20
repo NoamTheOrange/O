@@ -3,6 +3,9 @@ from flask import request
 
 import whisper
 import os
+import pickle
+import random
+import string
 
 #import webbrowser
 #import time
@@ -13,9 +16,42 @@ from bs4 import BeautifulSoup
 Words = {
     "play" : "playMedia",
     "show" : "playMedia",
-    "how" : "search"
+    "how" : "search",
+    "create user" : "createUser"
 }
-broadcastText = "well helo there"
+broadcastText = "well hello there"
+
+def createUser(transcript):
+    userFile = pickle.load(open('userData.pkl', "rb"))
+    generating = True
+    ID = ""
+    name = ""
+    permissions = ""
+
+    while generating == True:
+        ID = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+        for used in userFile:
+            if ID == used:
+                pass
+        else:
+            generating = False
+
+    data = transcript.split()
+    for dataPosition in range(len(data)):
+        if dataPosition == "user":
+            name = data[dataPosition +1]
+        if dataPosition == "argument":
+            permissions = data[dataPosition +1]
+
+    user = {ID : {
+        'name' : name,
+        'permissions' : permissions,
+        'message' : "".join("welcome"+name)}}
+
+    with open('users.pickle', 'wb') as f:
+    pickle.dump(user, f)
+    f.close()
+    return({"newID" : ID})
 
 def playMedia(inp):
     for i in ["play","show"]:
@@ -80,11 +116,13 @@ def runAudio(audio_name):
                     payload.update(playMedia(transcript))
                 if Words[word] == "search":
                     payload.update(search(transcript))
+                if Words[word] == "createUser":
+                    payload.update(createUser(transcript))
 
         print(payload)
         return(payload)
 
-def runUpdate(ask):
+def runUpdate(ask, ID):
     global broadcastText
     payload = {}
     if 'updateAll' in ask:
@@ -93,6 +131,13 @@ def runUpdate(ask):
         payload.update(mockData)
         text = ""
         text += broadcastText + "\n"
+        try:
+            userFile = pickle.load(open('userData.pkl', "rb"))
+            for user in userFile:
+                if ID == user:
+                    text += userFile[ID]['message'] + "\n"
+        except:
+            pass
 
         payload.update({'text' : text})
 
@@ -118,10 +163,14 @@ def main():
                     return {"error":"select you wave file"}
             if 'update' in request.data:
                 ask = request.data['update']
-                runUpdate(ask)
+                ID = request.data['ID']
+                runUpdate(ask, ID)
 
     except Exception as e:
         return {"error":str(e)}
+
+if __name__ == '__main__':  
+   app.run(debug = True, host='0.0.0.0')
     
 """
 run debuger:
