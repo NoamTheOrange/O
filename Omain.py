@@ -49,7 +49,7 @@ def createUser(transcript):
         'message' : "".join("welcome"+name)}}
 
     with open('users.pickle', 'wb') as f:
-    pickle.dump(user, f)
+        pickle.dump(user, f)
     f.close()
     return({"newID" : ID})
 
@@ -72,7 +72,10 @@ def playMedia(inp):
 def search(inp):
     for i in ["how does","google"]:
         if i in inp:
-            sPoint = inp.find(i) + len(i) + 1
+            if i == "how does":
+                sPoint = inp.find(i) + 1
+            else:
+                sPoint = inp.find(i) + len(i) + 1
             data = inp[sPoint:]
             #webbrowser.open("https://www.google.com/search?client=firefox-b-d&q="+data)  : client end
             params = {
