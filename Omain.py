@@ -165,11 +165,12 @@ def main():
                 else:
                     return {"error":"select you wave file"}
             elif 'update' in request.data:
+                print("hej")
                 ask = request.data['update']
                 ID = request.data['ID']
                 payload = runUpdate(ask, ID)
-        print(payload)
-        return(payload)
+            print(payload)
+            return(payload)
 
     except Exception as e:
         return {"error":str(e)}
