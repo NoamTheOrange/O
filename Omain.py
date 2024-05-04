@@ -127,11 +127,11 @@ def runAudio(audio_name):
 
 def runUpdate(ask, ID):
     global broadcastText
-    payload = {}
+    payload = {'updateData':{}}
     if 'updateAll' in ask:
         mockData = {'status':{"stat1":[234,'green','gray'],"stat2":[984,'red','green']}}
 
-        payload.update(mockData)
+        payload["updateData"].update(mockData)
         text = ""
         text += broadcastText + "\n"
         try:
@@ -142,7 +142,8 @@ def runUpdate(ask, ID):
         except:
             pass
 
-        payload.update({'text' : text})
+        payload["updateData"].update({'text' : text})
+        return(payload)
 
 app = Flask(__name__)
 @app.route("/",methods=["POST","GET"])
@@ -161,13 +162,14 @@ def main():
                     payload = runAudio(audio_name)
     
                     print(payload)
-                    return(payload)
                 else:
                     return {"error":"select you wave file"}
-            if 'update' in request.data:
+            elif 'update' in request.data:
                 ask = request.data['update']
                 ID = request.data['ID']
-                runUpdate(ask, ID)
+                payload = runUpdate(ask, ID)
+        print(payload)
+        return(payload)
 
     except Exception as e:
         return {"error":str(e)}
