@@ -200,6 +200,7 @@ def Update(frame, OutMaiTex):
             widget.destroy()
         
         returnn = send(["updateAll"],"update")
+        print(returnn)
         data = returnn["updateData"]
         
         #data = {"status" : {"stat1" : [123,"gray","green"], "stat2" : [234,"green","red"]}}   #example data
