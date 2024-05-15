@@ -6,6 +6,7 @@ import os
 import pickle
 import random
 import string
+import time
 
 #import webbrowser
 #import time
@@ -22,7 +23,7 @@ Words = {
 broadcastText = "well hello there"
 
 def createUser(transcript):
-    userFile = pickle.load(open('userData.pkl', "rb"))
+    userFile = pickle.load(open('userData.pickle', "rb"))
     generating = True
     ID = ""
     name = ""
@@ -38,7 +39,7 @@ def createUser(transcript):
 
     data = transcript.split()
     for dataPosition in range(len(data)):
-        if dataPosition == "user":
+        if dataPosition == " user":
             name = data[dataPosition +1]
         if dataPosition == "argument":
             permissions = data[dataPosition +1]
@@ -102,6 +103,13 @@ def search(inp):
             return({"Search" : ["https://www.google.com/search?client=firefox-b-d&q="+data, snippet]})
 
 
+def saveData(transcript):
+    data = pickle.load(open('dataColection.pickle', "rb"))
+    data[time.time()] = str(transcript)
+    with open('dataColection.pickle', 'wb') as f:
+        pickle.dump(data, f)
+    f.close()
+
 
 def runAudio(audio_name):
         model = whisper.load_model("base")
@@ -109,6 +117,7 @@ def runAudio(audio_name):
         Ctranscript = result["text"]
         os.remove(audio_name)
         transcript = Ctranscript.lower()
+        saveData(transcript)
 
         payload = {}
         payload["transcript"] = transcript
