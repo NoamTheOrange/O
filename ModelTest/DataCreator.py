@@ -24,7 +24,7 @@ for key in data:
             output.append(x)
     newDataCashe.append({"timeStamp":key, "input":transcript, "output":''.join(output)})
 
-filename = 'trainingData.csv'   
+filename = 'ModelTest/trainingData.csv'   
 fields = ['timeStamp', 'input', 'output']
 
 with open(filename, 'w') as csvfile:
