@@ -2,6 +2,12 @@
 
 SoftwareSerial espSerial(2,3);
 
+int blindDown = 13;
+int blindUpp = 14;
+
+int endDown = 15;
+int endUpp = 16;
+
 #define ssid "kedem"
 #define PASSWORD "noamalmamilo"
 
@@ -28,7 +34,28 @@ void loop()
   
   if(msg != NULL){
     Serial.println(msg);
+    if (msg == "blindDown") {
+        digitalWrite(blindUpp, LOW);
+        delay(10);
+        digitialWrite(blindDown, HIGH);
+    }
+    if (msg == "blindUpp") {
+        digitalWrite(blindDown, LOW);
+            delay(10);
+        digitialWrite(blindUpp, HIGH);
+    }
+    if (msg == "blindStop") {
+        digitalWrite(blindUpp, LOW)
+        digitialWrite(blindDown, LOW);
+    }
     delay(250);
+  }
+
+  if(digitalRead(endDown) == HIGH) {
+      digitalWrite(blindDown, LOW);
+  }
+  if (digitalRead(endUpp) == HIGH) {
+      digitalWrite(blindUpp, LOW);
   }
 }
 

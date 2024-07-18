@@ -7,6 +7,7 @@ import pickle
 import random
 import string
 import time
+import socket
 
 #import webbrowser
 #import time
@@ -101,7 +102,17 @@ def search(inp):
                     snippet = None
             print (snippet)
             return({"Search" : ["https://www.google.com/search?client=firefox-b-d&q="+data, snippet]})
+        
 
+def sendArduino(data):
+    ip = ""
+    port = 8080
+    
+    conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    conn.connect((ip,port))
+    
+    conn.send(data.encode())
+    
 
 def saveData(transcript):
     data = pickle.load(open('dataColection.pickle', "rb"))
