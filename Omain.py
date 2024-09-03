@@ -40,7 +40,7 @@ def createUser(transcript):
 
     data = transcript.split()
     for dataPosition in range(len(data)):
-        if dataPosition == " user":
+        if dataPosition == "user":
             name = data[dataPosition +1]
         if dataPosition == "argument":
             permissions = data[dataPosition +1]

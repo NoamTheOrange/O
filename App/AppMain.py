@@ -27,7 +27,7 @@ appONOFF = [True]
 OutputText = ""
 
 
-def record(stopper_var: tk.BooleanVar, frames_var: tk.Variable, gss: tk.IntVar, dir_var, button_text_var):
+def record(stopper_var: tk.BooleanVar, frames_var: tk.Variable, sample_size: tk.IntVar, dir_var, button_text_var):
     if frames_var.get():
         decision = tk.messagebox.askyesno(title='there is alredy a recording', message='Do you want to over write it?')
         if not decision:
@@ -57,21 +57,21 @@ def record(stopper_var: tk.BooleanVar, frames_var: tk.Variable, gss: tk.IntVar, 
     stream.stop_stream()
     stream.close()
     p.terminate()
-    gss.set(p.get_sample_size(FORMAT))
+    sample_size.set(p.get_sample_size(FORMAT))
     frames_var.set(frames)
     print('record end')
     button_text_var.set('start recording')
-    save(frames_var, gss.get(), dir_var)
+    save(frames_var, sample_size.get(), dir_var)
 
 
-def record_button(stopper_var: tk.BooleanVar, frames: tk.Variable, gss_var: tk.IntVar, dir_var, button_text_var):
+def record_button(stopper_var: tk.BooleanVar, frames: tk.Variable, sample_size_var: tk.IntVar, dir_var, button_text_var):
     if not stopper_var.get():
-        Thread(target=record, args=(stopper_var, frames, gss_var, dir_var, button_text_var)).start()
+        Thread(target=record, args=(stopper_var, frames, sample_size_var, dir_var, button_text_var)).start()
     else:
         stopper_var.set(False)
 
 
-def save(frames, gss, directory):
+def save(frames, sample_size, directory):
     if not frames:
         tk.messagebox.showerror(title='No record', message='You made no record that can be sent')
         return
@@ -81,7 +81,7 @@ def save(frames, gss, directory):
 
     wf = wave.open(file_location, 'wb')
     wf.setnchannels(CHANNELS)
-    wf.setsampwidth(gss)
+    wf.setsampwidth(sample_size)
     wf.setframerate(RATE)
     wf.writeframes(b''.join(frames.get()))
     wf.close()
@@ -226,7 +226,7 @@ def main():
     top = tk.Tk()
     stopper_var = tk.BooleanVar(value=False)
     frames = tk.Variable(value=[])
-    gss_var = tk.IntVar(value=0)
+    sample_size_var = tk.IntVar(value=0)
     dir_path = tk.StringVar(value='App\Odir')
     rec_var = tk.StringVar(value='start recording')
     ID = tk.StringVar(value='User ID')
@@ -245,7 +245,7 @@ def main():
 
     btn1 = tk.Button(
         master = mainFrame, text="start recording", textvariable=rec_var,
-        command=lambda: record_button(stopper_var, frames, gss_var, dir_path.get(), rec_var)
+        command=lambda: record_button(stopper_var, frames, sample_size_var, dir_path.get(), rec_var)
         )
     btn1.pack()
 
